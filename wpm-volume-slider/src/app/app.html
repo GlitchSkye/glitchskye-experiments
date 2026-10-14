@@ -1,40 +1,108 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
-<style>
- 
-</style>
 
 <main class="main">
-  <div class="content">
-    <h1>
-      Words per minute volume slider
-    </h1>
-    <h2>
-      type as many words as you can in order to set the volume
-    </h2>
-    <mat-slider id="volume-slider" aria-label="unit(s)"> 
-      <input matSliderStartThumb>
-      <input matSliderEndThumb>
-      </mat-slider>
-      <br>
-      <button mat-button>Begin Typing</button>
-  </div>
+  <section class="content">
+    <div class="eyebrow">SPEED · SOUND · FOCUS</div>
+
+    <h1>Words per minute volume slider</h1>
+    <h2>Type as many words as you can to turn up the volume.</h2>
+
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-label">Typing speed</span>
+        <div class="stat-value">
+          {{ wordsPerMinute }} <small>WPM</small>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <span class="stat-label">Words typed</span>
+        <div class="stat-value">{{ wordCount }}</div>
+      </div>
+
+      <div class="stat-card">
+        <span class="stat-label">Time elapsed</span>
+        <div class="stat-value">{{ formattedTime }}</div>
+      </div>
+    </div>
+
+    <div class="volume-panel">
+      <div class="volume-heading">
+        <label for="volume-slider">Volume level</label>
+        <span class="volume-number">{{ volume }}%</span>
+      </div>
+
+      <input
+        id="volume-slider"
+        class="volume-slider"
+        type="range"
+        min="0"
+        max="100"
+        [value]="volume"
+        [style.--volume]="volume + '%'"
+        disabled
+        aria-label="Volume based on typing speed"
+      />
+
+      <div class="slider-labels">
+        <span>Quiet</span>
+        <span>Moderate</span>
+        <span>Loud</span>
+      </div>
+
+      <div class="volume-meter" aria-hidden="true">
+        @for (bar of bars; track bar) {
+          <span
+            [class.active]="bar < volume * 0.4"
+            [style.animation-delay]="(bar % 8) * 40 + 'ms'"
+          ></span>
+        }
+      </div>
+    </div>
+
+    <div class="typing-panel">
+      <label for="typing-area">Your typing area</label>
+
+      <textarea
+        id="typing-area"
+        rows="6"
+        placeholder="Press Begin Typing to start..."
+        [value]="typedText"
+        (input)="onTyping($event)"
+        [disabled]="!isStarted"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+      ></textarea>
+
+      @if (isStarted) {
+        <p class="helper-text">
+          Keep typing! Your speed and volume update automatically.
+        </p>
+      } @else {
+        <p class="helper-text">
+          Start a session and type naturally to increase your score.
+        </p>
+      }
+    </div>
+
+    <div class="actions">
+      @if (!isStarted) {
+        <button class="primary-button" (click)="beginTyping()">
+          Begin Typing <span aria-hidden="true">→</span>
+        </button>
+      } @else {
+        <button class="primary-button stop-button" (click)="stopTyping()">
+          Finish Test
+        </button>
+      }
+
+      <button class="secondary-button" (click)="resetTest()">
+        Reset
+      </button>
+    </div>
+
+    <p class="footer-note">
+      Your typing speed controls the slider · 100 WPM = 100%
+    </p>
+  </section>
 </main>
-
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
-
-<router-outlet />
